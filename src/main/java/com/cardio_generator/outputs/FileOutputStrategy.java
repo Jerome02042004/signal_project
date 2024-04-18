@@ -7,14 +7,21 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.concurrent.ConcurrentHashMap;
 
+/* A strategy for outputting health data to files.*/
+
 public class FileOutputStrategy implements OutputStrategy {
 
 
     //changed all the basedDirectory it to camelcase
     private String baseDirectory;
 
+    /*Mapping from label to file path.*/
+
     public final ConcurrentHashMap<String, String> file_map = new ConcurrentHashMap<>();
 
+
+    /*@param baseDirectory The base directory where files will be stored.
+     */
     public FileOutputStrategy(String baseDirectory) {
 
         this.baseDirectory = baseDirectory;
