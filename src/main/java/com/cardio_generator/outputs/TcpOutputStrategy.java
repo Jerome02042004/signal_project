@@ -6,7 +6,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Executors;
 
+/*A strategy for outputting health data over TCP/IP*/
+
 public class TcpOutputStrategy implements OutputStrategy {
+
+    /*
+      Constructs a TcpOutputStrategy that listens on the specified port for incoming connections.
+
+      @param port The port on which the TCP server listens.
+     */
 
     private ServerSocket serverSocket;
     private Socket clientSocket;

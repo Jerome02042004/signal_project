@@ -11,7 +11,7 @@ import com.cardio_generator.generators.BloodSaturationDataGenerator;
 import com.cardio_generator.generators.BloodLevelsDataGenerator;
 import com.cardio_generator.generators.ECGDataGenerator;
 import com.cardio_generator.outputs.ConsoleOutputStrategy;
-import com.cardio_generator.outputs.fileOutputStrategy;
+import com.cardio_generator.outputs.FileOutputStrategy;
 import com.cardio_generator.outputs.OutputStrategy;
 import com.cardio_generator.outputs.TcpOutputStrategy;
 import com.cardio_generator.outputs.WebSocketOutputStrategy;
@@ -25,7 +25,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+/** this program  pretends to have health info for a bunch of
+        *patients. You can decide how many
+        *patients you want and how you want the info to be shown,
+        */
+
 public class HealthDataSimulator {
+
+    /**
+     * Parses command-line arguments to customize the simulation settings such as patient count and output method.
+     *
+     * @param args The command-line arguments passed to the application.
+     * @throws IOException If an I/O error occurs while processing the arguments.
+     */
 
     private static int patientCount = 50; // Default number of patients
     private static ScheduledExecutorService scheduler;
@@ -72,7 +84,7 @@ public class HealthDataSimulator {
                             if (!Files.exists(outputPath)) {
                                 Files.createDirectories(outputPath);
                             }
-                            outputStrategy = new fileOutputStrategy(baseDirectory);
+                            outputStrategy = new FileOutputStrategy(baseDirectory);
                         } else if (outputArg.startsWith("websocket:")) {
                             try {
                                 int port = Integer.parseInt(outputArg.substring(10));
@@ -106,6 +118,13 @@ public class HealthDataSimulator {
     }
 
     private static void printHelp() {
+
+        /**
+         * Initializes a list of patient IDs based on the specified patient count.
+         *
+         * @param patientCount The number of patients for which data will be simulated.
+         * @return A list of patient IDs.
+         */
         System.out.println("Usage: java HealthDataSimulator [options]");
         System.out.println("Options:");
         System.out.println("  -h                       Show help and exit.");
@@ -123,6 +142,12 @@ public class HealthDataSimulator {
     }
 
     private static List<Integer> initializePatientIds(int patientCount) {
+
+        /**
+         * Schedules data generation tasks for each patient using different data generators.
+         *
+         * @param patientIds The list of patient IDs for which data will be generated.
+         */
         List<Integer> patientIds = new ArrayList<>();
         for (int i = 1; i <= patientCount; i++) {
             patientIds.add(i);
@@ -131,6 +156,14 @@ public class HealthDataSimulator {
     }
 
     private static void scheduleTasksForPatients(List<Integer> patientIds) {
+
+        /**
+         * Schedules a task to be executed at regular intervals using a fixed-rate execution policy.
+         *
+         * @param task     The task to be scheduled.
+         * @param period   The time between successive task executions.
+         * @param timeUnit The time unit of the period parameter.
+         */
         ECGDataGenerator ecgDataGenerator = new ECGDataGenerator(patientCount);
         BloodSaturationDataGenerator bloodSaturationDataGenerator = new BloodSaturationDataGenerator(patientCount);
         BloodPressureDataGenerator bloodPressureDataGenerator = new BloodPressureDataGenerator(patientCount);
@@ -147,6 +180,12 @@ public class HealthDataSimulator {
     }
 
     private static void scheduleTask(Runnable task, long period, TimeUnit timeUnit) {
+        /**
+         * Entry point of the HealthDataSimulator application.
+         *
+         * @param args Command-line arguments to customize the simulation settings.
+         * @throws IOException If an I/O error occurs while parsing arguments or generating data.
+         */
         scheduler.scheduleAtFixedRate(task, random.nextInt(5), period, timeUnit);
     }
 }
